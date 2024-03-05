@@ -1,0 +1,137 @@
+timedatectl set-timezone UTC
+
+apt-get update
+apt-get upgrade
+
+apt-get install emacs-nox sudo redis postgresql-12 postgresql-server-dev-12 gcc \
+mercurial supervisor nginx-full pwgen  zlib1g-dev libjpeg62-dev mailutils \
+python3.8-dev libfreetype6-dev libxft-dev  libjpeg62  libjpeg-dev python3-pip \
+tree install tmux htop software-properties-common bat ripgrep
+
+add-apt-repository universe
+add-apt-repository ppa:certbot/certbot
+apt-get update
+apt-get install certbot python-certbot-nginx
+
+add-apt-repository ppa:ultradvorka/ppa &&  apt-get update &&  apt-get install hstr && hstr --show-configuration >> ~/.bashrc && . ~/.bashrc
+
+snap install node --classic --channel=12
+
+npm install -g yarn
+
+systemctl disable redis-server.service
+systemctl stop redis-server.service
+
+Block root user login in SSHd conf, test config changes:
+sshd -T
+
+
+useradd -m -g sudo -s /bin/bash sawan
+passwd sawan
+
+su - sawan
+mkdir .ssh
+chmod 700 .ssh
+copy ssh key
+chmod 644 .ssh/authorized_keys
+test key less login
+
+systemctl reload sshd
+
+pip3.8 install virtualenv
+
+useradd -m www -r -s /bin/bash
+su - www
+mkdir .ssh
+cd .ssh
+chmod 700 .
+ssh-keygen
+copy key to Bitbucket
+eval "$(ssh-agent -s)"
+ssh-add .ssh/id_rsa
+
+cd
+mkdir tmp
+mkdir dist
+mkdir sports-app-virtualenv
+mkdir sports-app
+mkdir sports-app/logs
+mkdir sports-app/logs/supervisor
+mkdir sports-app/run
+mkdir sports-app/tmp
+clone repo
+setup virtualenv
+source
+
+cd sportsappsite
+pwgen -s 100 1 > secret-key.txt
+pwgen -s 50 1 > db-password.txt
+
+pip install -r py-requirements-prod.txt
+
+cd
+mkdir dist
+hg clone ssh://hg@bitbucket.org/sportsanalyst/new-stumpguruweb
+cd new-stumpguruweb
+ln -s ~/dist dist
+yarn install
+yarn build
+
+
+certbot --nginx
+certbot renew --dry-run
+systemctl start certbot.timer
+systemctl enable certbot.timer
+systemctl status certbot.timer
+
+
+
+PG export and import:
+=======================
+create user cricket_user;
+create database cricket_user with owner cricket_user;
+create database cricket with owner cricket_user;
+alter user cricket_user password '';
+alter user cricket_user with createdb ;
+
+
+Adjust pg_hba.conf
+# host       DATABASE  USER             ADDRESS     METHOD  [OPTIONS]
+host         cricket   cricket_user     127.0.0.1/32   md5
+
+
+Add to www .pgpass:
+localhost:5432:cricket:cricket_user:
+localhost:5432:cricket_user:cricket_user:
+
+
+
+sed -i '' 's/pg_cricket/cricket_user/' cricket-data-06-04-2018-15-30
+psql -U cricket_user -h localhost < cricket-data-06-04-2018-15-30
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Congratulations! You have successfully enabled https://test-1.stumpguru.com
+
+You should test your configuration at:
+https://www.ssllabs.com/ssltest/analyze.html?d=test-1.stumpguru.com
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at:
+   /etc/letsencrypt/live/test-1.stumpguru.com/fullchain.pem
+   Your key file has been saved at:
+   /etc/letsencrypt/live/test-1.stumpguru.com/privkey.pem
+   Your cert will expire on 2020-01-29. To obtain a new or tweaked
+   version of this certificate in the future, simply run certbot again
+   with the "certonly" option. To non-interactively renew *all* of
+   your certificates, run "certbot renew"
+ - Your account credentials have been saved in your Certbot
+   configuration directory at /etc/letsencrypt. You should make a
+   secure backup of this folder now. This configuration directory will
+   also contain certificates and private keys obtained by Certbot so
+   making regular backups of this folder is ideal.
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le

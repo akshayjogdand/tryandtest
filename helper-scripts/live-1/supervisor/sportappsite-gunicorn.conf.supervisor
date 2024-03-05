@@ -1,0 +1,6 @@
+[program:sportappsite-gunicorn]
+command = sh /home/www/sports-app/helper-scripts/live-1/gunicorn_start.bash
+user = www
+stdout_logfile = /home/www/sports-app/logs/gunicorn.log
+redirect_stderr = true
+environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8

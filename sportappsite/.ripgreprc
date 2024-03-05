@@ -1,0 +1,3 @@
+--glob=!*/migrations/*
+--glob=!/tmp/*
+--glob=!/drf_api/Stumpguru.postman_collection.json

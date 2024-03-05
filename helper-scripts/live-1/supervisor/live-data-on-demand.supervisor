@@ -1,0 +1,7 @@
+[program:sportappsite-live-data-on-demand]
+command = /home/www/sports-app/helper-scripts/live-1/live_dump_data_on_demand.bash
+user = www
+directory = /home/www/sports-app/helper-scripts
+stdout_logfile = /home/www/sports-app/logs/live-data-on-demand.log
+redirect_stderr = true
+environment=LANG=en_US.UTF-8,LC_ALL=en_US.UTF-8
